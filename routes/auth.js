@@ -128,9 +128,11 @@ module.exports = (db) => {
               });
               console.log("Record insert Succesfully");
               return response.json({
-                error: ""
+                error: "",
+                first_name: firstname,
+                last_name: lastname
               });
-            });
+            });            
           }
         })
     
@@ -139,6 +141,18 @@ module.exports = (db) => {
       }
     })
     
+    router.get("/logout", (req, res) => {
+      // Clear the session data
+      req.session.user = null;
+   
+      // Clear the cookies
+      res.clearCookie('user_id');
+      res.clearCookie('user_role');
+   
+      // Redirect user to login page or send success response
+      res.status(200).json({ message: 'Logout successful' });
+   });
+   
    router.post("/forgot-password", async (req, res) => {
       const email = req.body.email;
       const user = await db.collection("login").findOne({ email });

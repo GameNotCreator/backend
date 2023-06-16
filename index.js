@@ -15,7 +15,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000', // remplacer par l'URL de votre application front-end
+  origin: 'http://164.132.113.53:3000', // remplacer par l'URL de votre application front-end
   credentials: true
 }));
 app.use(cookieParser());
@@ -24,15 +24,17 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use(session({
-  secret: 'H&HcOrP2023!', // Utilisez une clé secrète plus sécurisée dans une application de production
+  secret: 'H&HcOrP2023!', 
   resave: false,
   saveUninitialized: false,
+  rolling: true, // <-- Ajouter cette ligne
   cookie: {
-    secure: false, // Définir à 'true' si vous utilisez HTTPS
+    secure: false, 
     httpOnly: true, 
-    maxAge: 24 * 60 * 60 * 1000 // 1 jour
+    maxAge: 60 * 60 * 1000 // 1 heure en millisecondes
   }
 }));
+
 
 mongoose.connect('mongodb+srv://gamenotcreator:didou1234@webapp.mymezal.mongodb.net/?retryWrites=true&w=majority', {
 useNewUrlParser: true,
