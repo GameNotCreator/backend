@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const nodemailer = require("nodemailer");
@@ -13,11 +14,6 @@ const cors = require('cors');
 // Express app initialization
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: 'http://164.132.113.53:3000', // remplacer par l'URL de votre application front-end
-  credentials: true
-}));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -36,10 +32,16 @@ app.use(session({
 }));
 
 
-mongoose.connect('mongodb+srv://gamenotcreator:didou1234@webapp.mymezal.mongodb.net/?retryWrites=true&w=majority', {
-useNewUrlParser: true,
-useUnifiedTopology: true
-});
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+})); 
 
 const db = mongoose.connection;
 
@@ -62,4 +64,6 @@ res.sendFile(path.join(__dirname, 'public', 'access_denied.html'));
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 
-app.listen(3500, () => console.log('Server listening on port 3500'));   
+app.listen(process.env.PORT, () => {
+  console.log('Backend server is running !!!');
+});
